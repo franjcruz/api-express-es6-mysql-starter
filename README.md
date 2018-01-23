@@ -1,6 +1,5 @@
-# wallemux
+# api express mysql
 
-Servicio centralizador de gestores de monederos y medios de pago.
 
 ## Prerequisites
 
