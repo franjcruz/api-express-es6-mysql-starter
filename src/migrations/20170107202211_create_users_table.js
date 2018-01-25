@@ -9,10 +9,10 @@ export function up(knex) {
     table.increments();
     table
       .timestamp('created_at')
-      .notNull()
+      .notNullable()
       .defaultTo(knex.raw('now()'));
-    table.timestamp('updated_at').notNull();
-    table.string('name').notNull();
+    table.timestamp('updated_at').nullable();
+    table.string('name').notNullable();
   });
 }
 

@@ -14,7 +14,7 @@ export function seed(knex, Promise) {
         // Inserts seed entries
         knex('users').insert([
           {
-            name: 'Saugat Acharya',
+            name: 'Fran Cruz',
             updated_at: new Date()
           },
           {
