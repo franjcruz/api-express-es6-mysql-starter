@@ -1,6 +1,7 @@
 version: '2'
 
 services:
+  # SQL and document data store
   db:
     image: mysql:5.7
     volumes:
@@ -12,8 +13,11 @@ services:
       MYSQL_DATABASE: api
       MYSQL_USER: api
       MYSQL_PASSWORD: api
+
+  # API
   express-api-es6-starter:
     build: ./
+    hostname: api
     volumes:
       - .env.docker:/app/.env
     ports:
@@ -22,7 +26,16 @@ services:
     command: -c "sleep 5 && yarn migrate && yarn seed && yarn start:dev"
     depends_on:
       - db
-    links:
-      - db
+      - redis
+
+  # Distributed in-memory cache
+  redis:
+    image: redis:4.0.6-alpine
+    volumes:
+      - redis:/data
+    user: redis
+
 volumes:
     db_data:
+    redis:
+
