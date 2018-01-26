@@ -1,12 +1,10 @@
 import Boom from 'boom';
 import User from '../models/user';
-// import Token from '../models/token';
 import jwt from 'jsonwebtoken';
 import randtoken from 'rand-token';
+import redisClient from '../redis';
 
 const secret = process.env.APP_SECRET;
-// sustituir por modelo token
-let refreshTokens = {};
 
 /**
  * Get all users.
@@ -69,23 +67,30 @@ export function deleteUser(id) {
  *
  * @param  {String}  username
  * @param  {String}  password
- * @return {String}
+ * @return {Promise}
  */
 export function login(username, password) {
-  let user = {
-    username: username,
-    password: password, // Remove
-    role: 'admin'
-  };
+  return new Promise((resolve, reject) => {
+    let user = {
+      username: username,
+      password: password, // Remove
+      role: 'admin'
+    };
 
-  let token = jwt.sign(user, secret, { expiresIn: 300 });
-  let refreshToken = randtoken.uid(256);
-  refreshTokens[refreshToken] = username;
+    let token = jwt.sign(user, secret, { expiresIn: 300 });
+    let refreshToken = randtoken.uid(256);
 
-  let res = {
-    token: token,
-    refreshToken: refreshToken
-  };
+    let res = {
+      token: token,
+      refreshToken: refreshToken
+    };
 
-  return res;
+    redisClient.set(refreshToken, username, err => {
+      if (err) {
+        return reject(err);
+      }
+
+      return resolve(res);
+    });
+  });
 }

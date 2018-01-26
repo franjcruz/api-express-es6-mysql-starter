@@ -30,6 +30,7 @@ app.use(helmet());
 app.use(compression());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(errorHandler.bodyParser);
 app.use(json);
 
