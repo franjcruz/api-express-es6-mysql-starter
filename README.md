@@ -1,6 +1,5 @@
 # api express mysql
 
-
 ## Prerequisites
 
 * [Node.js](https://yarnpkg.com/en/docs/install) - 6.9.0 or above
@@ -43,8 +42,9 @@ Example,
 Use [docker-compose](https://docs.docker.com/compose/) to quickly bring up a stack with pre-configured Postgres database container. Data is ephemeral and containers will disappear when stack is removed.
 
 Specific configuration for Docker is in `.env.docker`
-- `0.0.0.0` as `$APP_HOST` to expose app on Docker network interface
-- Pre-configured Postgres settings - can be updated to point to another Postgres host
+
+* `0.0.0.0` as `$APP_HOST` to expose app on Docker network interface
+* Pre-configured Postgres settings - can be updated to point to another Postgres host
 
 Bring up stack,
 
@@ -56,17 +56,6 @@ Bring down stack,
 
     $ docker-compose down
 
-## Using MySQL instead of PostgreSQL
-
-Install the [mysql](https://www.npmjs.com/package/mysql) driver first. Update these lines `DB_CLIENT='pg'` and `DB_PORT='5432'` in your .env file to `DB_CLIENT='mysql'` and `DB_PORT='3306'` respectively.
-
-You can remove the [pg](https://www.npmjs.com/package/pg) driver if you like to.
-
-    $ yarn add mysql
-    $ yarn remove pg
-
-That's it, you are ready to roll.
-
 ## Tests
 
 To run the tests you need to create a separate test database. Don't forget to update your `.env` file to include the name of the test database and run the migrations.
@@ -77,4 +66,3 @@ To run the tests you need to create a separate test database. Don't forget to up
 Run tests with coverage.
 
     $ yarn test:coverage
-

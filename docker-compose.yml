@@ -34,6 +34,8 @@ services:
     image: redis:4.0.6-alpine
     volumes:
       - redis:/data
+    ports:
+      - "6379:6379"
     user: redis
 
 volumes:

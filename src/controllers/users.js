@@ -55,4 +55,14 @@ router.delete('/:id', findUser, (req, res, next) => {
     .catch(err => next(err));
 });
 
+/**
+ * POST /api/users/login
+ */
+router.post('/login', (req, res, next) => {
+  userService
+    .login(req.body.username, req.body.password)
+    .then(data => res.json({ data }))
+    .catch(err => next(err));
+});
+
 export default router;

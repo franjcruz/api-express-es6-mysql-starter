@@ -1,5 +1,12 @@
 import Boom from 'boom';
 import User from '../models/user';
+// import Token from '../models/token';
+import jwt from 'jsonwebtoken';
+import randtoken from 'rand-token';
+
+const secret = process.env.APP_SECRET;
+// sustituir por modelo token
+let refreshTokens = {};
 
 /**
  * Get all users.
@@ -55,4 +62,30 @@ export function updateUser(id, user) {
  */
 export function deleteUser(id) {
   return new User({ id }).fetch().then(user => user.destroy());
+}
+
+/**
+ * Login user.
+ *
+ * @param  {String}  username
+ * @param  {String}  password
+ * @return {String}
+ */
+export function login(username, password) {
+  let user = {
+    username: username,
+    password: password, // Remove
+    role: 'admin'
+  };
+
+  let token = jwt.sign(user, secret, { expiresIn: 300 });
+  let refreshToken = randtoken.uid(256);
+  refreshTokens[refreshToken] = username;
+
+  let res = {
+    token: token,
+    refreshToken: refreshToken
+  };
+
+  return res;
 }
