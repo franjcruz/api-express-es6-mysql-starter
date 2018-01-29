@@ -21,9 +21,29 @@ definitions:
     title: NewUser
     type: object
     properties:
-      name:
+      Username:
+        type: string
+        description: Username of the user
+  Login:
+    title: Login
+    type: object
+    properties:
+      username:
         type: string
         description: Name of the user
+      password:
+        type: string
+        description: Password of the user
+  Token:
+    title: Token
+    type: object
+    properties:
+      token:
+        type: string
+        description: Token valid for user loged
+      refreshToken:
+        type: string
+        description: Refresh token valid for user new token requests
   Error:
     title: Error
     type: object
@@ -198,6 +218,41 @@ definitions:
     responses:
       204:
         description: User deleted (no-content)
+      400:
+        description: Bad request
+        schema:
+          $ref: '#/definitions/ValidationError'
+      404:
+        description: User not found
+        schema:
+          $ref: '#/definitions/NotFoundError'
+      500:
+        description: Internal server error
+        schema:
+          $ref: '#/definitions/ServerError'
+
+/users/login:
+  post:
+    summary: Login user
+    description: Create token for an user
+    produces:
+      - application/json
+    tags:
+      - Users
+    parameters:
+      - name: UserParams
+        description: POST params for an user
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Login'
+    responses:
+      201:
+        description: Newly token and refreshToken for user
+        schema:
+          title: Token
+          type: object
+          $ref: '#/definitions/Token'
       400:
         description: Bad request
         schema:

@@ -1,10 +1,9 @@
 import Boom from 'boom';
 import jwt from 'jsonwebtoken';
-// import Token from '../models/token';
+import redisClient from '../redis';
+import logger from '../utils/logger';
 
 const secret = process.env.APP_SECRET;
-// sustituir por modelo token
-let refreshTokens = {};
 
 /**
  * Refresh token.
@@ -12,19 +11,29 @@ let refreshTokens = {};
  *
  * @param  {String}  username
  * @param  {String}  refreshToken
- * @return {String}
+ * @return {Promise}
  */
 export function refreshToken(username, refreshToken) {
-  if (refreshToken in refreshTokens && refreshTokens[refreshToken] === username) {
-    let user = {
-      username: username,
-      role: 'admin'
-    };
+  return new Promise((resolve, reject) => {
+    redisClient.get(refreshToken, (err, res) => {
+      logger.log('info', res, username);
+      if (res === username) {
+        let user = {
+          username: username,
+          role: 'admin'
+        };
 
-    return jwt.sign(user, secret, { expiresIn: 300 });
-  } else {
-    throw new Boom.notFound('Token not found');
-  }
+        // let token = jwt.sign(user, secret, { expiresIn: 300 });
+        let tokenRes = {
+          token: jwt.sign(user, secret, { expiresIn: 300 })
+        };
+
+        return resolve(tokenRes);
+      } else {
+        return reject(new Boom.notFound('Token not found'));
+      }
+    });
+  });
 }
 
 /**
@@ -32,14 +41,16 @@ export function refreshToken(username, refreshToken) {
  *
  *
  * @param  {String}  refreshToken
- * @return {Boolean}
+ * @return {Promise}
  */
 export function rejectToken(refreshToken) {
-  if (refreshToken in refreshTokens) {
-    delete refreshTokens[refreshToken];
-
-    return true;
-  } else {
-    throw new Boom.notFound('Token not found');
-  }
+  return new Promise((resolve, reject) => {
+    redisClient.del(refreshToken, (err, res) => {
+      if (res === 1) {
+        return resolve(res);
+      } else {
+        return reject(new Boom.notFound('Token not found'));
+      }
+    });
+  });
 }

@@ -20,7 +20,7 @@ router.post('/', (req, res, next) => {
 router.post('/reject', (req, res, next) => {
   tokenService
     .rejectToken(req.body.refreshToken)
-    .then(res.status(HttpStatus.NO_CONTENT))
+    .then(data => res.status(HttpStatus.NO_CONTENT).json({ data }))
     .catch(err => next(err));
 });
 
