@@ -2,13 +2,16 @@ import { Router } from 'express';
 import HttpStatus from 'http-status-codes';
 import * as userService from '../services/userService';
 import { findUser, userValidator } from '../validators/userValidator';
+import passport from 'passport';
+
+require('./../middlewares/passport')(passport);
 
 const router = Router();
 
 /**
  * GET /api/users
  */
-router.get('/', (req, res, next) => {
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
   userService
     .getAllUsers()
     .then(data => res.json({ data }))
@@ -18,7 +21,7 @@ router.get('/', (req, res, next) => {
 /**
  * GET /api/users/:id
  */
-router.get('/:id', (req, res, next) => {
+router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res, next) => {
   userService
     .getUser(req.params.id)
     .then(data => res.json({ data }))
@@ -28,7 +31,7 @@ router.get('/:id', (req, res, next) => {
 /**
  * POST /api/users
  */
-router.post('/', userValidator, (req, res, next) => {
+router.post('/', passport.authenticate('jwt', { session: false }), userValidator, (req, res, next) => {
   userService
     .createUser(req.body)
     .then(data => res.status(HttpStatus.CREATED).json({ data }))
@@ -38,7 +41,7 @@ router.post('/', userValidator, (req, res, next) => {
 /**
  * PUT /api/users/:id
  */
-router.put('/:id', findUser, userValidator, (req, res, next) => {
+router.put('/:id', passport.authenticate('jwt', { session: false }), findUser, userValidator, (req, res, next) => {
   userService
     .updateUser(req.params.id, req.body)
     .then(data => res.json({ data }))
@@ -48,7 +51,7 @@ router.put('/:id', findUser, userValidator, (req, res, next) => {
 /**
  * DELETE /api/users/:id
  */
-router.delete('/:id', findUser, (req, res, next) => {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), findUser, (req, res, next) => {
   userService
     .deleteUser(req.params.id)
     .then(data => res.status(HttpStatus.NO_CONTENT).json({ data }))

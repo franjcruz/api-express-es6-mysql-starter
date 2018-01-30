@@ -11,12 +11,7 @@ import logger from './utils/logger';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import json from './middlewares/json';
-// import passport from 'passport';
 import * as errorHandler from './middlewares/errorHandler';
-
-let passport = require('passport');
-let JwtStrategy = require('passport-jwt').Strategy;
-let ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const app = express();
 
@@ -39,42 +34,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(errorHandler.bodyParser);
 app.use(json);
 
-// Passport init
-// app.use(passport.initialize);
-// require('./middlewares/passport')(passport);
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-let opts = {};
-
-// Setup JWT options
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = process.env.APP_SECRET;
-
-passport.use(
-  new JwtStrategy(opts, function(jwtPayload, done) {
-    let expirationDate = new Date(jwtPayload.exp * 1000);
-    if (expirationDate < new Date()) {
-      return done(null, false);
-    }
-    let user = jwtPayload;
-    done(null, user);
-  })
-);
-
 // Everything in the public folder is served as static content
 app.use(express.static(path.join(__dirname, '/../public')));
 
 // API Routes
 app.use('/api', routes);
-
-app.get('/test_jwt', passport.authenticate('jwt'), function(req, res) {
-  res.json({ success: 'You are authenticated with JWT!', user: req.user });
-});
 
 // Error Middlewares
 app.use(errorHandler.genericErrorHandler);
