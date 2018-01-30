@@ -4,8 +4,24 @@ import * as userService from '../services/userService';
 
 const SCHEMA = {
   name: Joi.string()
-    .label('Name')
-    .max(90)
+    .label('name')
+    .max(255)
+    .optional(),
+  surname: Joi.string()
+    .label('surname')
+    .max(255)
+    .optional(),
+  username: Joi.string()
+    .label('username')
+    .max(255)
+    .required(),
+  password: Joi.string()
+    .label('password')
+    .max(255)
+    .required(),
+  phone: Joi.string()
+    .label('phone')
+    .max(15)
     .required()
 };
 

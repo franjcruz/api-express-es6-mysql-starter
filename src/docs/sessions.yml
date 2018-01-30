@@ -1,38 +1,28 @@
 definitions:
-  NewToken:
-    title: NewToken
+  Session:
+    title: Session
     type: object
     properties:
-      Token:
+      token:
         type: string
-        description: New token for the user
+        description: Token valid for user loged
   Login:
     title: Login
     type: object
     properties:
-      username:
+      email:
         type: string
-        description: Name of the user
+        description: Email of the user
       password:
         type: string
         description: Password of the user
-  TokenRequest:
-    title: TokenRequest
-    type: object
-    properties:
-      username:
-        type: string
-        description: Username of the user
-      refreshToken:
-        type: string
-        description: Refresh token valid for user new token requests
-  TokenReject:
-    title: TokenReject
+  DeleteToken:
+    title: DeleteToken
     type: object
     properties:
       refreshToken:
         type: string
-        description: Refresh token valid for user new token requests
+        description: Token valid for user new token requests
   Error:
     title: Error
     type: object
@@ -66,34 +56,34 @@ definitions:
                 param:
                   type: string
 
-/token:
+/sessions:
   post:
-    summary: Request a new token
-    description: Request a new token with refreshToken for an user
+    summary: Login user
+    description: Create token for an user
     produces:
       - application/json
     tags:
-      - Token
+      - Sessions
     parameters:
-      - name: TokenParams
-        description: POST params for an token
+      - name: userParams
+        description: POST params for an user
         in: body
         required: true
         schema:
-          $ref: '#/definitions/TokenRequest'
+          $ref: '#/definitions/Login'
     responses:
       201:
         description: Newly token for user
         schema:
-          title: NewToken
+          title: Session
           type: object
-          $ref: '#/definitions/NewToken'
+          $ref: '#/definitions/Session'
       400:
         description: Bad request
         schema:
           $ref: '#/definitions/ValidationError'
       404:
-        description: Token not found
+        description: User not found
         schema:
           $ref: '#/definitions/NotFoundError'
       500:
@@ -101,21 +91,55 @@ definitions:
         schema:
           $ref: '#/definitions/ServerError'
 
-/token/reject:
-  post:
-    summary: Reject refresh token
-    description: Delete a saved refresh token
+# /sessions/refresh:
+#   post:
+#     summary: Request a new token
+#     description: Request a new token with refreshToken for an user
+#     produces:
+#       - application/json
+#     tags:
+#       - Sessions
+#     parameters:
+#       - name: TokenParams
+#         description: POST params for an token
+#         in: body
+#         required: true
+#         schema:
+#           $ref: '#/definitions/TokenRequest'
+#     responses:
+#       201:
+#         description: Newly token for user
+#         schema:
+#           title: NewToken
+#           type: object
+#           $ref: '#/definitions/NewToken'
+#       400:
+#         description: Bad request
+#         schema:
+#           $ref: '#/definitions/ValidationError'
+#       404:
+#         description: Token not found
+#         schema:
+#           $ref: '#/definitions/NotFoundError'
+#       500:
+#         description: Internal server error
+#         schema:
+#           $ref: '#/definitions/ServerError'
+
+/sessions/{token}:
+  delete:
+    summary: Delete token
+    description: Delete a saved token
     produces:
       - application/json
     tags:
-      - Token
+      - Sessions
     parameters:
-      - name: TokenParams
+      - name: token
         description: POST params for an token
-        in: body
+        in: path
         required: true
-        schema:
-          $ref: '#/definitions/TokenReject'
+        type: string
     responses:
       204:
         description: Token deleted (no-content)

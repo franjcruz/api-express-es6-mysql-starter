@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import swaggerSpec from './utils/swagger';
 import usersController from './controllers/users';
-import tokenController from './controllers/token';
+import sessionsController from './controllers/sessions';
 
 /**
  * Contains all API routes for the application.
@@ -54,6 +54,6 @@ router.get('/', (req, res) => {
 });
 
 router.use('/users', usersController);
-router.use('/token', tokenController);
+router.use('/sessions', sessionsController);
 
 export default router;

@@ -1,10 +1,5 @@
 import Boom from 'boom';
 import User from '../models/user';
-import jwt from 'jsonwebtoken';
-import randtoken from 'rand-token';
-import redisClient from '../redis';
-
-const secret = process.env.APP_SECRET;
 
 /**
  * Get all users.
@@ -38,7 +33,15 @@ export function getUser(id) {
  * @return {Promise}
  */
 export function createUser(user) {
-  return new User({ name: user.name }).save().then(user => user.refresh());
+  return new User({
+    name: user.name,
+    surname: user.surname,
+    email: user.email,
+    password: user.password,
+    phone: user.phone
+  })
+    .save()
+    .then(user => user.refresh());
 }
 
 /**
@@ -49,7 +52,15 @@ export function createUser(user) {
  * @return {Promise}
  */
 export function updateUser(id, user) {
-  return new User({ id }).save({ name: user.name }).then(user => user.refresh());
+  return new User({ id })
+    .save({
+      name: user.name,
+      surname: user.surname,
+      email: user.email,
+      password: user.password,
+      phone: user.phone
+    })
+    .then(user => user.refresh());
 }
 
 /**
@@ -63,34 +74,18 @@ export function deleteUser(id) {
 }
 
 /**
- * Login user.
+ * Validate user credentials.
  *
- * @param  {String}  username
+ * @param  {String}  email
  * @param  {String}  password
  * @return {Promise}
  */
-export function login(username, password) {
-  return new Promise((resolve, reject) => {
-    let user = {
-      username: username,
-      password: password, // Remove
-      role: 'admin'
-    };
+export function validateCredentials(email, password) {
+  return new User({ email, password }).fetch().then(user => {
+    if (!user) {
+      throw new Boom.notFound('Invalid credentials');
+    }
 
-    let token = jwt.sign(user, secret, { expiresIn: 300 });
-    let refreshToken = randtoken.uid(256);
-
-    let res = {
-      token: token,
-      refreshToken: refreshToken
-    };
-
-    redisClient.set(refreshToken, username, err => {
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(res);
-    });
+    return user;
   });
 }
