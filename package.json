@@ -21,10 +21,23 @@
     "test:coverage": "NODE_ENV=test nyc --require babel-register --reporter lcov --reporter text mocha --recursive test"
   },
   "lint-staged": {
-    "*.js": ["eslint --fix", "git add"]
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   },
-  "keywords": ["javascript", "node", "express", "es6", "api", "mysql", "redis", "swagger"],
+  "keywords": [
+    "javascript",
+    "node",
+    "express",
+    "es6",
+    "api",
+    "mysql",
+    "redis",
+    "swagger"
+  ],
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "bookshelf": "^0.10.3",
     "bookshelf-camelcase": "^2.0.1",
@@ -39,8 +52,11 @@
     "jsonwebtoken": "^8.1.1",
     "knex": "^0.13.0",
     "lodash": "^4.17.4",
+    "moment": "^2.20.1",
     "morgan": "^1.8.2",
     "mysql": "^2.15.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^3.0.1",
     "redis": "^2.8.0",
     "serve-favicon": "^2.4.3",
     "swagger-jsdoc": "^1.9.4",

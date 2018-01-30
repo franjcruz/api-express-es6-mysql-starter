@@ -11,8 +11,9 @@ const SCHEMA = {
     .label('surname')
     .max(255)
     .optional(),
-  username: Joi.string()
-    .label('username')
+  email: Joi.string()
+    .email()
+    .label('email')
     .max(255)
     .required(),
   password: Joi.string()

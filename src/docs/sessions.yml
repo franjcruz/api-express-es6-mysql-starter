@@ -91,41 +91,6 @@ definitions:
         schema:
           $ref: '#/definitions/ServerError'
 
-# /sessions/refresh:
-#   post:
-#     summary: Request a new token
-#     description: Request a new token with refreshToken for an user
-#     produces:
-#       - application/json
-#     tags:
-#       - Sessions
-#     parameters:
-#       - name: TokenParams
-#         description: POST params for an token
-#         in: body
-#         required: true
-#         schema:
-#           $ref: '#/definitions/TokenRequest'
-#     responses:
-#       201:
-#         description: Newly token for user
-#         schema:
-#           title: NewToken
-#           type: object
-#           $ref: '#/definitions/NewToken'
-#       400:
-#         description: Bad request
-#         schema:
-#           $ref: '#/definitions/ValidationError'
-#       404:
-#         description: Token not found
-#         schema:
-#           $ref: '#/definitions/NotFoundError'
-#       500:
-#         description: Internal server error
-#         schema:
-#           $ref: '#/definitions/ServerError'
-
 /sessions/{token}:
   delete:
     summary: Delete token

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
+import moment from 'moment';
 // import randtoken from 'rand-token';
-import logger from '../utils/logger';
 
 const secret = process.env.APP_SECRET;
 
@@ -15,38 +15,20 @@ export function generate(user) {
   let payload = {
     id: user.id,
     email: user.email,
-    phone: user.phone
+    phone: user.phone,
+    iat: moment().unix(),
+    exp: moment()
+      .add(1, 'days')
+      .unix()
   };
-  let token = jwt.sign(payload, secret, { expiresIn: 300 });
-  // let refreshToken = randtoken.uid(256);
+  let token = jwt.sign(payload, secret);
 
   let res = {
     token: token
-    // refreshToken: refreshToken
   };
 
   return res;
 }
-
-// /**
-//  * Refresh token jwt.
-//  *
-//  *
-//  * @param  {Object}  user
-//  * @return {Object}
-//  */
-// export function refresh(user) {
-//   let payload = {
-//     id: user.id,
-//     email: user.email,
-//     phone: user.phone
-//   };
-//   let refresh = {
-//     token: jwt.sign(payload, secret, { expiresIn: 300 })
-//   };
-
-//   return refresh;
-// }
 
 /**
  * Decode jwt.
@@ -55,9 +37,11 @@ export function generate(user) {
  * @param  {String}  token
  * @return {Object}
  */
-export function decode(token) {
+export function verify(token) {
   jwt.verify(token, secret, (err, decoded) => {
-    logger.log('info', 'Decoded', decoded);
+    if (err) {
+      return err;
+    }
 
     return decoded;
   });

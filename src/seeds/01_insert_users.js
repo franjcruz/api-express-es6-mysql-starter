@@ -17,7 +17,7 @@ export function seed(knex, Promise) {
             email: 'fcruz@kryptotech.io',
             name: 'Fran',
             surname: 'Cruz',
-            password: 'pepe',
+            password: '$2a$10$Yrv0BdKxwA94Mno7anNbFe8d/a0tSVmEmnTqF7WgKsAJr9cr3tVaW', // Plain: secret
             phone: '675219666',
             updated_at: new Date()
           },
@@ -25,7 +25,7 @@ export function seed(knex, Promise) {
             email: 'jdoe@kryptotech.io',
             name: 'John',
             surname: 'Doe',
-            password: 'pepe',
+            password: '$2a$10$Yrv0BdKxwA94Mno7anNbFe8d/a0tSVmEmnTqF7WgKsAJr9cr3tVaW', // Plain: secret
             phone: '675666666',
             updated_at: new Date()
           }

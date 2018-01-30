@@ -1,5 +1,8 @@
 import Boom from 'boom';
 import User from '../models/user';
+import * as bcrypt from 'bcryptjs';
+
+const saltRounds = 10;
 
 /**
  * Get all users.
@@ -33,15 +36,17 @@ export function getUser(id) {
  * @return {Promise}
  */
 export function createUser(user) {
-  return new User({
-    name: user.name,
-    surname: user.surname,
-    email: user.email,
-    password: user.password,
-    phone: user.phone
-  })
-    .save()
-    .then(user => user.refresh());
+  return bcrypt.hash(user.password, saltRounds).then(function(hash) {
+    return new User({
+      name: user.name,
+      surname: user.surname,
+      email: user.email,
+      password: hash,
+      phone: user.phone
+    })
+      .save()
+      .then(user => user.refresh());
+  });
 }
 
 /**
@@ -52,15 +57,17 @@ export function createUser(user) {
  * @return {Promise}
  */
 export function updateUser(id, user) {
-  return new User({ id })
-    .save({
-      name: user.name,
-      surname: user.surname,
-      email: user.email,
-      password: user.password,
-      phone: user.phone
-    })
-    .then(user => user.refresh());
+  return bcrypt.hash(user.password, saltRounds).then(function(hash) {
+    return new User({ id })
+      .save({
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        password: hash,
+        phone: user.phone
+      })
+      .then(user => user.refresh());
+  });
 }
 
 /**
@@ -81,8 +88,11 @@ export function deleteUser(id) {
  * @return {Promise}
  */
 export function validateCredentials(email, password) {
-  return new User({ email, password }).fetch().then(user => {
+  return new User({ email }).fetch().then(user => {
     if (!user) {
+      throw new Boom.notFound('User not found');
+    }
+    if (!bcrypt.compareSync(password, user.attributes.password)) {
       throw new Boom.notFound('Invalid credentials');
     }
 

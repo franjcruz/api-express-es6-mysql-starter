@@ -19,31 +19,6 @@ export function login(email, password) {
   });
 }
 
-// /**
-//  * Refresh token.
-//  *
-//  *
-//  * @param  {String}  email
-//  * @param  {String}  refreshToken
-//  * @return {Promise}
-//  */
-// export function refreshToken(email, refreshToken) {
-//   return new Promise((resolve, reject) => {
-//     redisClient.get(refreshToken, (err, res) => {
-//       if (res === email) {
-//         // TODO decode con token actual
-//         jwt.decode(refreshToken, user => {
-//           let tokenRes = jwt.refresh(user);
-
-//           return resolve(tokenRes);
-//         });
-//       } else {
-//         return reject(new Boom.notFound('Token not found'));
-//       }
-//     });
-//   });
-// }
-
 /**
  * Delete saved token.
  *
