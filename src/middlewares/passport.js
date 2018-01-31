@@ -1,6 +1,8 @@
 import { Strategy, ExtractJwt } from 'passport-jwt';
+import { getUser } from '../services/userService';
+import logger from '../utils/logger';
 
-const secret = process.env.APP_SECRET;
+const secret = process.env.JWT_ENCRYPTION;
 
 module.exports = function(passport) {
   passport.serializeUser(function(user, done) {
@@ -13,13 +15,19 @@ module.exports = function(passport) {
   opts.secretOrKey = secret;
 
   passport.use(
-    new Strategy(opts, function(jwtPayload, done) {
-      let expirationDate = new Date(jwtPayload.exp * 1000);
-      if (expirationDate < new Date()) {
-        return done(null, false);
-      }
-      let user = jwtPayload;
-      done(null, user);
+    new Strategy(opts, (jwtPayload, done) => {
+      return getUser(jwtPayload.id)
+        .then(user => {
+          if (user) {
+            done(null, user);
+          } else {
+            done(null, false);
+          }
+        })
+        .catch(err => {
+          logger.info(err);
+          done(null, false);
+        });
     })
   );
 };

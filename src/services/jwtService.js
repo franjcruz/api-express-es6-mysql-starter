@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
-// import randtoken from 'rand-token';
 
-const secret = process.env.APP_SECRET;
+const secret = process.env.JWT_ENCRYPTION;
+const expi = process.env.JWT_EXPIRATION;
 
 /**
  * Generate a new JWT.
@@ -18,7 +18,7 @@ export function generate(user) {
     phone: user.phone,
     iat: moment().unix(),
     exp: moment()
-      .add(1, 'days')
+      .add(expi, 'seconds')
       .unix()
   };
   let token = jwt.sign(payload, secret);

@@ -4,7 +4,7 @@ import { validateCredentials } from './userService';
 import * as jwt from './jwtService';
 
 /**
- * Login session.
+ * Token request.
  *
  * @param  {String}  email
  * @param  {String}  password

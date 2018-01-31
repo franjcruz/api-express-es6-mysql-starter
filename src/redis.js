@@ -1,4 +1,3 @@
-import './env';
 import redis from 'redis';
 import logger from './utils/logger';
 
