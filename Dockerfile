@@ -6,7 +6,8 @@ EXPOSE 8848
 # Copy app and install packages
 WORKDIR /app
 COPY . /app/
-RUN npm -g install yarn && yarn
+RUN npm install
+RUN npm install -g knex
 
 # Default app commands
 ENTRYPOINT ["npm"]

@@ -31,7 +31,7 @@ router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res, 
 /**
  * POST /api/users
  */
-router.post('/', passport.authenticate('jwt', { session: false }), userValidator, (req, res, next) => {
+router.post('/', userValidator, (req, res, next) => {
   userService
     .createUser(req.body)
     .then(data => res.status(HttpStatus.CREATED).json({ data }))
