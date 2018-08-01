@@ -1,5 +1,6 @@
-import './env';
+// import './env';
 import './db';
+import CONFIG from './config/config';
 import cors from 'cors';
 import path from 'path';
 import helmet from 'helmet';
@@ -15,14 +16,14 @@ import * as errorHandler from './middlewares/errorHandler';
 
 const app = express();
 
-const APP_PORT = (process.env.NODE_ENV === 'test' ? process.env.TEST_APP_PORT : process.env.APP_PORT) || process.env.PORT || '3000';
-const APP_HOST = process.env.APP_HOST || '0.0.0.0';
+const APP_PORT = (CONFIG.node_env === 'test' ? CONFIG.test_app_port : CONFIG.app_port) || CONFIG.port || '3000';
+const APP_HOST = CONFIG.app_host || '0.0.0.0';
 
 app.set('port', APP_PORT);
 app.set('host', APP_HOST);
 
-app.locals.title = process.env.APP_NAME;
-app.locals.version = process.env.APP_VERSION;
+app.locals.title = CONFIG.app_name;
+app.locals.version = CONFIG.app_version;
 
 app.use(favicon(path.join(__dirname, '/../public', 'favicon.ico')));
 app.use(cors());
